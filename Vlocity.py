@@ -1,97 +1,97 @@
 import unittest
-import sys
+from itertools import combinations as cb
 
 
-class StringSplitter(object):
+class FindSumCombinations(object):
     """
-    This class is used for splitting strings into lists of substrings
-    based on the delimiters set.
+    This class is used for find all pairs of elements from a
+    list of integers that add up to a specific sum/target.
 
     """
 
-    def __init__(self, *seps):
+    def __init__(self, nums, target):
         """
-        @summary: Initializes an object representing 2 or more delimiters
-                  based on which any input string will be split.
-        @param seps: Tuple of Seperators acting as delimiters
-        @type seps: Tuple
+        @summary: Initializes the list object from which the pais
+                    need to be determined
+        @param nums: List of elements
+        @type nums: List
+        @param target: The target sum
+        @type target: int
         """
-        self.sep_list = seps
+        self.nums = nums
+        self.sum = target
 
     def __str__(self):
 
-        return "class to split the strings"
+        return "class to find all pairs that add up to the target sum"
 
-    @staticmethod
-    def _validate_ip_string(input_str):
+    def list_of_pairs(self):
         """
-        @summary: Validate the input data/string provided by the user,
-                  to be an object of basestrin or its subclss
-        @param input_str: input string to split.
-        @type input_str: basestring
-        @return: None
-        """
-
-        if not isinstance(input_str, basestring):
-            print("Invalid Input: Input is of type:%s " % type(input_str))
-            sys.exit(-1)  # terminate the execution as input is not a string.
-
-    def split_string(self, input_str):
-        """
-        @summary: Split the string provided using the delimiters of the class object
-        @param input_str: Input strig that needs to be split
-        @type: basestring
-        @return: list of substrings split from actual string
+        @summary: find all pairs of elements in the input_list
+                    that add up to a specific sum/target
+        @param:input_list: Input list that needs to be traversed
+        @type: list
+        @param: target
+        @type: int
+        @return: list of pairs split from actual list
         @type: List
         """
 
-        # Validate the input string is valid.
+        subsets = []
 
-        StringSplitter._validate_ip_string(input_str)
+        input_list = self.nums
+        target = self.sum
 
-        # Initialize the substring list to the actual string.
-        subs = [input_str]
+        if not input_list:
+            return []
 
-        # Logic to generate the list of substrings generated from parent string
-        # using the delimiters of the class object.
+        if len(input_list) == 1 and target not in input_list:
+            return []
 
-        for sep in self.sep_list:
-            s, subs = subs, []
-            for seq in s:
-                subs += seq.split(sep)
+        if len(input_list) == 2 and sum(input_list) == target:
+            return [input_list]
 
-        return subs
+        if len(input_list) == 1 and target in input_list:
+            return [input_list]
+
+        my_gen = (list(comb) for comb in cb(input_list, 2) if sum(comb) == target)
+
+        for comb in my_gen:
+            subsets.append(comb)
+        if target in subsets:
+            subsets.append([target])
+
+        return subsets
 
 
-class test_String_Splitter(unittest.TestCase):
+class TestCombinationSum(unittest.TestCase):
 
-    def test_split_string_all_delim(self):
+    def test_combination_sum_empty_list(self):
 
-        my_string = StringSplitter('$', '&', '#')
-        my_substring = my_string.split_string('Kapil$Mathur&Accion#Employee')
-        self.assertEquals(my_substring, ['Kapil', 'Mathur', 'Accion', 'Employee'])
+        fsc_object = FindSumCombinations([], 11)
+        my_subsets = fsc_object.list_of_pairs()
+        self.assertEquals(my_subsets, [])
 
-    def test_split_string_one_delim(self):
+    def test_combination_sum_single_element_list(self):
+        fsc_object = FindSumCombinations([12], 11)
+        my_subsets = fsc_object.list_of_pairs()
+        self.assertEquals(my_subsets, [])
 
-        my_string = StringSplitter('$')
-        my_substring = my_string.split_string('Kapil$Mathur&Accion#Employee')
-        self.assertEquals(my_substring, ['Kapil', 'Mathur&Accion#Employee'])
-
-    def test_split_string_two_delim(self):
-
-        my_string = StringSplitter('$', '&')
-        my_substring = my_string.split_string('Kapil$Mathur&Accion#Employee')
-        self.assertEquals(my_substring, ['Kapil', 'Mathur', 'Accion#Employee'])
-
-    def test_split_string_no_delim(self):
-
-        my_string = StringSplitter()
-        my_substring = my_string.split_string('Kapil$Mathur&Accion#Employee')
-        self.assertEquals(my_substring, ['Kapil$Mathur&Accion#Employee'])
+    def test_combination_sum_single_element_list_1(self):
+        fsc_object = FindSumCombinations([11], 11)
+        my_subsets = fsc_object.list_of_pairs()
+        self.assertEquals(my_subsets, [[11]])
+    
+    def test_combination_sum_two_element_list(self):
+        fsc_object = FindSumCombinations([5, 6], 11)
+        my_subsets = fsc_object.list_of_pairs()
+        self.assertEquals(my_subsets, [[5, 6]])
+    
+    def test_combination_sum_general_list(self):
+        fsc_object = FindSumCombinations([1, 2, 3, 7, 9, 11], 11)
+        my_subsets = fsc_object.list_of_pairs()
+        self.assertEquals(my_subsets, [[2, 9], [4, 7], [11]])
 
 
 if __name__ == '__main__':
     unittest.main()
-
-
-
