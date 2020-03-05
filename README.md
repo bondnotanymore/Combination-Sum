@@ -1,2 +1,2 @@
-# String-Splitter
-This project provides a solution to split a string using multiple delimiters provided by the user
+# Combination Sum
+This class is used for find all pairs of elements from a list of integers that add up to a specific sum/target.
